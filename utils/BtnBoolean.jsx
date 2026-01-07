@@ -1,29 +1,30 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const BtnBoolean = ({ isTrue,setIsTrue,text1,text2}) => {
+const BtnBoolean = ({ type, setType, text1, text2 }) => {
 
+    const isTrue = type === 'Income';
     const bgColor = isTrue ? 'bg-green-600' : 'bg-gray-300';
     const textColor = isTrue ? 'text-white' : 'text-black';
-    const bgColor2 = isTrue ? 'bg-gray-300' : 'bg-green-600';
-    const textColor2 = isTrue ? 'text-black' : 'text-red-700';
+    const bgColor2 = isTrue ? 'bg-gray-300' : 'bg-red-600';
+    const textColor2 = isTrue ? 'text-black' : 'text-white';
 
     return (
-        <View className={`flex-row justify-center items-center rounded-full gap-2`}>
+        <View className={`flex-row justify-between items-center rounded-full  bg-gray-300 w-[90%] self-center`}>
             
 
                 <Pressable
                 style={styles.btn}
-                    onPress={() => { setIsTrue(true)}}
+                    onPress={() => { setType('Income')}}
                     className={`${textColor} ${bgColor}`}
                 >
-                    <Text>{text1}</Text>
+                    <Text className={`${textColor} text-[16px]`}>{text1}</Text>
                 </Pressable>
                 <Pressable
                 style={styles.btn}
-                    onPress={() => { setIsTrue(false)}}
+                    onPress={() => { setType('Expense')}}
                     className={`${textColor2} ${bgColor2}`}
                 >
-                    <Text>{text2}</Text>
+                    <Text className={`${textColor2} text-[16px]`}>{text2}</Text>
                 </Pressable>
                 
                
@@ -37,11 +38,11 @@ export default BtnBoolean
 
 const styles = StyleSheet.create({
     btn: {
-        width: '44%',
+        width: '50%',
         height: 48,
         justifyContent: "center",
         alignItems: "center",
         padding: 8,
-        borderRadius: 8,
+        borderRadius: 24,
     }
 })

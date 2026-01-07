@@ -1,10 +1,10 @@
 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ShadowProvider from '../utils/ShadowProvider';
-const FloatBtn = ({ fn, text, lead, tail }) => {
+const FloatBtn = ({ fn, text, lead, tail,newStyles }) => {
     return (
         <ShadowProvider
-            style={{ position: 'absolute', bottom: -40, width: '80%', alignSelf: 'center' }}
+            style={[{  width: '80%', alignSelf: 'center' },newStyles]}
             className="rounded-full"
         >
             <TouchableOpacity

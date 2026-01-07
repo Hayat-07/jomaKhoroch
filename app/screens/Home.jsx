@@ -2,27 +2,23 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import BalanceCard from '../../components/BalanceCard';
 import CustomDropdown from '../../components/CustomDropdown';
 import FloatBtn from '../../components/FloatBtn';
 import HistoryCard from '../../components/HistoryCard';
+import { amountDataContext } from '../../db/AmountDataContext';
 import ShadowProvider from '../../utils/ShadowProvider';
-const DATA = [
-    { id: "1", title: "Food" },
-    { id: "2", title: "Transport" },
-    { id: "3", title: "Shopping" },
-    { id: "4", title: "Bills" },
-    { id: "5", title: "Bills" },
-    { id: "6", title: "Bills" },
-    { id: "7", title: "Bills" },
-    { id: "8", title: "Bills" },
-];
+
+
+
 
 
 const Home = () => {
     const [value, setValue] = useState('');
+    const [openMenuId, setOpenMenuId] = useState(null);
+    const { arrayOfData, setArrayOfData } = useContext(amountDataContext);
 
 
     return (
@@ -93,19 +89,27 @@ const Home = () => {
 
                     <FlatList
 
-                        data={DATA}
+                        data={arrayOfData}
                         keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <View >
-                                <HistoryCard></HistoryCard>
+                        renderItem={({ item, index }) => (
+                            <View key={item.id}>
+                                <HistoryCard item={item} openMenuId={openMenuId} setOpenMenuId={setOpenMenuId} />
                             </View>
                         )}
                     />
 
+
+
+
                 </View>
 
 
-                <FloatBtn fn={() => { router.push('./screens/AddAmount') }} lead={<Ionicons name="add-outline" size={24} color="white" />} text={'Add'}></FloatBtn>
+                <FloatBtn
+                    fn={() => { router.push('./screens/AddAmount') }}
+                    lead={<Ionicons name="add-outline" size={24} color="white" />}
+                    text={'Add'}
+                    newStyles={{ position: 'absolute', bottom: -40, }}
+                ></FloatBtn>
 
 
             </View>
