@@ -18,6 +18,7 @@ const CustomDropdown = ({
   listContainer,
   textStyle,
   itemStyle,
+  icon
 }) => {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState(null);
@@ -42,6 +43,9 @@ const CustomDropdown = ({
         <Text style={[styles.text, textStyle]}>
           {selectedValue || placeholder}
         </Text>
+        <View className='justify-center items-center '>
+          {icon}
+        </View>
       </TouchableOpacity>
 
       {/* Floating List */}

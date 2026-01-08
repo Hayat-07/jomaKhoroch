@@ -1,5 +1,4 @@
 import EvilIcons from '@expo/vector-icons/EvilIcons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useContext, useState } from 'react';
@@ -10,7 +9,7 @@ import FloatBtn from '../../components/FloatBtn';
 import HistoryCard from '../../components/HistoryCard';
 import { amountDataContext } from '../../db/AmountDataContext';
 import ShadowProvider from '../../utils/ShadowProvider';
-
+import Entypo from '@expo/vector-icons/Entypo';
 
 
 
@@ -18,14 +17,14 @@ import ShadowProvider from '../../utils/ShadowProvider';
 const Home = () => {
     const [value, setValue] = useState('');
     const [openMenuId, setOpenMenuId] = useState(null);
-    const { arrayOfData, setArrayOfData } = useContext(amountDataContext);
-
+    const { arrayOfData, selectedMonth, setSelectedMonth, setArrayOfData, statisticData, setStatisticData } = useContext(amountDataContext);
+    const months = ["All","January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     return (
         <View style={{ flex: 1, justifyContent: "flex-start", alignItems: "center", width: "100%" }} className=" bg-light-background">
 
-            <View style={[styles.boxShadow,]} className="border p-4 mt-4 border-slate-300 justify-center items-center w-[90%] bg-white rounded-3xl">
-                <View className="flex-row px-4 gap-2 absolute right-2 top-2 h-9 rounded-full border border-gray-300 justify-center items-center">
+            <View style={[styles.boxShadow,]} className="border relative p-4 mt-4 border-slate-300 justify-center items-center w-[90%] bg-white rounded-3xl">
+                {/* <View className="flex-row px-4 gap-2 absolute right-2 top-2 h-9 rounded-full border border-gray-300 justify-center items-center">
 
                     <CustomDropdown
                         options={["One", "Two", "Three"]}
@@ -38,6 +37,24 @@ const Home = () => {
                     />
 
                     <FontAwesome5 name="caret-down" size={24} color="black" />
+
+                </View> */}
+
+                <View className="absolute flex-row right-0 top-0 mt-4 mr-4 border border-slate-300 rounded-full px-2 py-1">
+                    <CustomDropdown
+                        options={months}
+                        selectedValue={months[selectedMonth]}
+                        onSelect={(val) => {
+                            const monthIndex = months.indexOf(val);
+                            setSelectedMonth(monthIndex);
+                        }}
+                        placeholder="Select Month"
+                        dropdownStyle={{ minWidth: 72,paddingHorizontal:4,gap: 4, height: 24, justifyContent: "center", alignItems: "center", position: 'relative',flexDirection:"row" }}
+                        listContainer={{ width: "auto", right: 24 }}
+                        containerStyle={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}
+                        icon={<Entypo name="chevron-small-down" size={24} color="black" />}
+                    />
+                   
 
                 </View>
                 <BalanceCard ></BalanceCard>

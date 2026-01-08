@@ -19,7 +19,7 @@ const TextInputBox = ({
 
             <TextInput
                 value={data}
-                onChangeText={(text) => setData(text)}
+                onChangeText={(text) => {name==='amount'?setData(Number(text)):setData(text)}}
                 style={[
                     styles.textInput,
                     props.multiline ? styles.multilineInput : null,

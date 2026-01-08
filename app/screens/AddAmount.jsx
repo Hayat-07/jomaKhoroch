@@ -3,13 +3,12 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import FloatBtn from '../../components/FloatBtn';
 import { amountDataContext } from '../../db/AmountDataContext';
 import BtnBoolean from '../../utils/BtnBoolean';
 import DatePick from '../../utils/DatePick';
 import TextInputBox from '../../utils/TextInputBox';
-import { Alert } from 'react-native';
 
 const AddAmount = ({ }) => {
   const { id } = useLocalSearchParams();
@@ -21,7 +20,7 @@ const AddAmount = ({ }) => {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
 
-  const { arrayOfData, setArrayOfData } = useContext(amountDataContext);
+  const { arrayOfData, setArrayOfData, statisticData,setStatisticData } = useContext(amountDataContext);
 
   const [amountDetails, setAmountDetails] = useState({
     amount, time, date, type, title, note,
@@ -55,7 +54,7 @@ const AddAmount = ({ }) => {
 
 
   const handleSubmit = () => {
-    setArrayOfData([...arrayOfData, {...amountDetails, id: new Date().getTime().toString()}]);
+    setArrayOfData([...arrayOfData, { ...amountDetails, id: new Date().getTime().toString() }]);
     setDate(new Date());
     setTime(new Date());
     setType('Income');
@@ -63,7 +62,7 @@ const AddAmount = ({ }) => {
     setTitle('');
     setNote('');
     router.back();
-    
+
     Alert.alert(
       "Saved",
       "Your amount has been added"
@@ -77,7 +76,7 @@ const AddAmount = ({ }) => {
       data.id === id ? { ...data, ...amountDetails, id: data.id } : data
     );
     setArrayOfData(updatedData);
-    console.log("updatedData ::",updatedData);
+    console.log("updatedData ::", updatedData);
     Alert.alert(
       "Updated",
       "Your amount has been updated"
