@@ -1,12 +1,12 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
   FlatList,
-  StyleSheet,
   Modal,
   Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const CustomDropdown = ({
@@ -20,9 +20,11 @@ const CustomDropdown = ({
   itemStyle,
   icon
 }) => {
+
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState(null);
   const buttonRef = useRef(null);
+
 
   const openDropdown = () => {
     buttonRef.current.measureInWindow((x, y, width, height) => {
@@ -40,7 +42,7 @@ const CustomDropdown = ({
         onPress={openDropdown}
         activeOpacity={0.8}
       >
-        <Text style={[styles.text, textStyle]}>
+        <Text style={[styles.text, , textStyle]}>
           {selectedValue || placeholder}
         </Text>
         <View className='justify-center items-center '>
@@ -70,11 +72,12 @@ const CustomDropdown = ({
                   <TouchableOpacity
                     style={[styles.item, itemStyle]}
                     onPress={() => {
+
                       onSelect(item);
                       setOpen(false);
                     }}
                   >
-                    <Text>{item}</Text>
+                    <Text style={{ fontSize: 12 }}>{item}</Text>
                   </TouchableOpacity>
                 )}
               />
@@ -90,10 +93,10 @@ export default CustomDropdown;
 
 const styles = StyleSheet.create({
   dropdown: {
-    
+
   },
   text: {
-    fontSize: 16,
+    fontSize: 12,
   },
   overlay: {
     flex: 1,

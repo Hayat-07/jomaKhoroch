@@ -4,27 +4,30 @@ import { amountDataContext } from '../db/AmountDataContext';
 
 
 const BalanceCard = ({ }) => {
-     const { arrayOfData, setArrayOfData, statisticData,setStatisticData } = useContext(amountDataContext);
+     const { thisMonthData,setThisMonthData,arrayOfData, setArrayOfData, statisticData,setStatisticData } = useContext(amountDataContext);
     
     return (
-        <View className=" w-full justify-center items-center  ">
-            <View style={{}} className="py-6  ">
-                <Text>Balance</Text>
-                <Text style={{ fontSize: 40, fontWeight: "bold" }} className=" text-green-600 ">{statisticData?.balance || 0}<Text style={{ fontSize: 40, color: "#d1d5db" }}>TK</Text></Text>
-            </View>
-            <View className="w-[90%] flex-row justify-evenly border-t-2 border-slate-200 py-6 ">
-                <View className=" w-[50%] justify-center items-center bg-gradient-to-r: " >
-                    <View>
-                        <Text className=" text-green-300">Income</Text>
+        <View className=" w-full justify-center items-center   ">
+            
+            <View className="w-[90%] justify-evenly  ">
+                
+                <View className=" border-b border-slate-300 py-1 w-full flex-row justify-between items-center  " >
+                    
+                        <Text className=" text-green-300 w-20 font-bold">Income</Text>
                         <Text style={{ fontSize: 24, }} className=" text-gray-500 font-bold ">{statisticData?.income || 0} <Text style={{ fontSize: 12, color: "#d1d5db" }}>TK</Text></Text>
-                    </View>
+                    
                 </View>
-                <View className=" w-[50%] justify-center items-center bg-gradient-to-r: " >
-                    <View>
-                        <Text className=" text-red-300">Expence</Text>
+                <View className="border-b border-slate-300 py-1 w-full flex-row justify-between items-center " >
+                    
+                        <Text className=" text-red-300 w-20 font-bold">Expence</Text>
                         <Text style={{ fontSize: 24 }} className=" text-gray-500 font-bold ">{statisticData?.expense || 0} <Text style={{ fontSize: 12, color: "#d1d5db" }}>TK</Text></Text>
-                    </View>
+                    
                 </View>
+
+            </View>
+            <View style={{}} className=" w-[90%]   justify-between items-center flex-row gap-4 ">
+                <Text className=' w-20 font-bold'>Balance</Text>
+                <Text style={{ fontSize: 24, fontWeight: "bold" }} className=" text-green-600 ">{statisticData?.balance || 0}<Text style={{ fontSize: 12, color: "#d1d5db" }}>  TK</Text></Text>
             </View>
         </View>
 

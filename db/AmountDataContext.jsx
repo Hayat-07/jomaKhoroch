@@ -78,8 +78,8 @@ const sampleAmountData = [
   {
     id: "1704691200009",
     amount: 600,
-    date: new Date("2025-01-09"),
-    time: new Date("2025-01-09T19:00:00"),
+    date: new Date("2025-02-09"),
+    time: new Date("2025-02-09T19:00:00"),
     type: "Expense",
     title: "Internet Bill",
     note: "Monthly WiFi"
@@ -87,8 +87,8 @@ const sampleAmountData = [
   {
     id: "1704691200010",
     amount: 1000,
-    date: new Date("2025-01-10"),
-    time: new Date("2025-01-10T13:45:00"),
+    date: new Date("2025-03-10"),
+    time: new Date("2025-03-10T13:45:00"),
     type: "Income",
     title: "Gift",
     note: "Received from friend"
@@ -106,18 +106,49 @@ const AmountDataContextProvider = ({ children }) => {
     balance: 0,
   });
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [searchInput, setSearchInput] = useState('');
+  const [filteredDatas, setFilteredDatas] = useState([]);
 
- useEffect(() => {
-    const currentMonth = new Date().getMonth();
-    const filteredData = arrayOfData.filter(item => item.date.getMonth() === selectedMonth);
-    setThisMonthData(filteredData);
-  }, [arrayOfData]);
+
+
+
+  // useEffect(() => {
+  //   if (selectedMonth === 12) {
+  //     setThisMonthData(arrayOfData);
+  //     return;
+  //   }
+  //   const filteredData = arrayOfData.filter(item => item.date.getMonth() === selectedMonth);
+  //   setFilteredDatas(filteredData);
+  //   setThisMonthData(filteredData);
+  // }, [arrayOfData, selectedMonth]);
+
 
   useEffect(() => {
-    const income = arrayOfData
+    if (searchInput.trim() === '') {
+      // If search input is empty, show all data for the selected month
+      if (selectedMonth === 12) {
+        setThisMonthData(arrayOfData);
+        return;
+      }
+      const filteredData = arrayOfData.filter(item => item.date.getMonth() === selectedMonth);
+      setFilteredDatas(filteredData);
+      setThisMonthData(filteredData);
+      return;
+    } else {
+      const filteredData = thisMonthData.filter(item =>
+        item.title.toLowerCase().startsWith(searchInput.toLowerCase())
+      );
+      setThisMonthData(filteredData);
+    }
+    console.log("useEffect triggered");
+  }, [searchInput, arrayOfData, selectedMonth]);
+
+
+  useEffect(() => {
+    const income = thisMonthData
       .filter(item => item.type === 'Income')
       .reduce((sum, item) => sum + item.amount, 0);
-    const expense = arrayOfData
+    const expense = thisMonthData
       .filter(item => item.type === 'Expense')
       .reduce((sum, item) => sum + item.amount, 0);
     const balance = income - expense;
@@ -127,17 +158,25 @@ const AmountDataContextProvider = ({ children }) => {
       expense: expense,
       balance: balance
     });
-  }, [arrayOfData]);
+  }, [thisMonthData]);
 
 
   return (
     <amountDataContext.Provider value={{
       arrayOfData,
       setArrayOfData,
+
       statisticData,
       setStatisticData,
-      selectedMonth, 
-      setSelectedMonth
+
+      thisMonthData,
+      setThisMonthData,
+
+      selectedMonth,
+      setSelectedMonth,
+
+      searchInput,
+      setSearchInput
 
     }}>
       {children}
