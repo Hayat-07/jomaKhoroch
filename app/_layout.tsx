@@ -11,7 +11,30 @@ export default function RootLayout() {
   return (
     <AmountDataContextProvider>
       <PaperProvider>
-        <Stack />
+        <Stack>
+          <Stack.Screen
+            name="index.jsx"
+            // options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(tabs)"
+            options={{ 
+              headerShown: false,
+              
+
+             }}
+          />
+          <Stack.Screen
+            name="AddUpdate"
+            options={{ 
+              headerShown: false,
+              presentation:"modal"
+              
+
+             }}
+          />
+
+        </Stack>
       </PaperProvider>
     </AmountDataContextProvider>
 
