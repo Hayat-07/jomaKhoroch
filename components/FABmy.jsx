@@ -2,7 +2,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View,TouchableOpacity } from 'react-native';
 
-const FABmy = ({  newStyles }) => {
+const FABmy = ({ itemData,fn, newStyles,deleteItem,setOpenModal,setSelectedItemId }) => {
     const [open, setOpen] = useState(false);
      
     return (
@@ -12,7 +12,7 @@ const FABmy = ({  newStyles }) => {
             <Pressable
                 onPress={() => { setOpen(!open) }}
             >
-                <Entypo name="dots-three-vertical" size={24} color="black" />
+                <Entypo name="dots-three-vertical" size={24} color="gray" />
             </Pressable>
             {
                 open && (
@@ -21,12 +21,23 @@ const FABmy = ({  newStyles }) => {
                         style={{ zIndex: 50 }}
                     >
                         <TouchableOpacity
-                            onPress={() => { deleteItem(item.id); setOpen(false); }}
+                            onPress={() => { 
+                                deleteItem(fn.id); 
+                                setOpen(false); }}
                             className=" px-4 py-2 border-b border-gray-200 ">
                             <Text className=" text-red-600">Delete</Text>
+                            
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => { setOpen(false); router.push({ pathname: '/screens/AddAmount', params: { id: item.id } }) }}
+                            onPress={() => {
+
+                                fn.setBudgetName(itemData.budgetName);
+                                fn.setExpense(String(itemData.expense));
+                                fn.setBudget(String(itemData.budget));
+
+                                setSelectedItemId(fn.id)
+                                setOpenModal(true); 
+                                setOpen(false) }}
                             className=" px-4 py-2 border-b border-gray-200 ">
                             <Text className=" text-red-600">Edit</Text>
                         </TouchableOpacity>

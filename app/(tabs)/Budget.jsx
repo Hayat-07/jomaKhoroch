@@ -1,4 +1,3 @@
-import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useEffect, useState } from 'react';
@@ -37,21 +36,17 @@ const budgetItems = [
 
 const Budget = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
-
     const [errorText, setErrorText] = useState('');
     const [allBudgetItems, setAllBudgetItems] = useState(budgetItems);
-
     const [totalAmounts, setTotalAmounts] = useState({
         totalBudget: 0,
         totalExpense: 0,
         totalRemaining: 0,
     });
-
-    const [isPercent, setIsPercent] = useState(false);
     const [budgetName, setBudgetName] = useState('');
     const [expense, setExpense] = useState('');
     const [budget, setBudget] = useState('');
+    const [selectedItemId, setSelectedItemId] = useState(null);
 
     useEffect(() => {
         const totals = allBudgetItems.reduce(
@@ -80,25 +75,41 @@ const Budget = () => {
 
         setErrorText('');
 
-        setAllBudgetItems([
-            ...allBudgetItems,
-            {
-                budgetName,
-                budget: Number(budget),
-                expense: Number(expense || 0),
-                date: new Date().toISOString(),
-            },
-        ]);
+        const item = {
+            budgetName,
+            budget: Number(budget),
+            expense: Number(expense || 0),
+            date: new Date().toISOString(),
+        };
+
+        setAllBudgetItems(prev =>
+            selectedItemId !== null
+                ? prev.map((it, i) => (i === selectedItemId ? item : it))
+                : [...prev, item]
+        );
 
         setBudgetName('');
         setBudget('');
         setExpense('');
+        setSelectedItemId(null);
         setOpenModal(false);
     };
+
+
+    const deleteItem = index => {
+        setAllBudgetItems(prev => prev.filter((_, i) => i !== index));
+    };
+
+
+
+
 
     return (
         <SafeAreaView style={{ flex: 1 }} className="items-center bg-gray-100">
             {/* HEADER */}
+            <View className='justify-center  items-start mt-4 w-[90%] pl-4'>
+                <Text className="text-2xl font-bold text-start ">Income & Expence</Text>
+            </View>
             <View className="flex-row justify-between items-center w-[90%] my-10 px-4">
                 <View>
                     <Text className="text-gray-500">Expense</Text>
@@ -143,7 +154,7 @@ const Budget = () => {
                     `${index}-${item.budgetName}`
                 }
                 className="w-[90%]"
-                renderItem={({ item }) => {
+                renderItem={({ item, index }) => {
                     const progress = item.budget
                         ? item.expense / item.budget
                         : 0;
@@ -162,11 +173,7 @@ const Budget = () => {
                                 {/* <Pressable>
                                     <Entypo name="dots-three-vertical" size={24} color="black" />
                                 </Pressable> */}
-                                <FABmy newStyles={{ }}></FABmy>
-
-
-
-
+                                <FABmy itemData={item} newStyles={{}} fn={{ id: index, setBudgetName, setExpense, setBudget }} setOpenModal={setOpenModal} setSelectedItemId={setSelectedItemId} deleteItem={deleteItem}></FABmy>
                             </View>
 
                             <ProgressBar
@@ -209,6 +216,12 @@ const Budget = () => {
                 <FontAwesome6 name="add" size={24} color="white" />
             </TouchableOpacity>
 
+
+
+
+
+
+
             {/* MODAL */}
             <Modal visible={openModal} transparent animationType="fade">
                 <View className="h-full justify-center items-center bg-black/80">
@@ -234,7 +247,8 @@ const Budget = () => {
                 value={isPercent}
               />
             </View> */}
-                        <Text className=' text-xl font-bold '>Add new Budget </Text>
+                        <Text className=' text-xl font-bold '>{selectedItemId !== null ? "Update Budget" : "Add Budget"}
+ </Text>
 
                         <TextInput
                             label="Budget Name"
@@ -268,7 +282,12 @@ const Budget = () => {
 
                         <View className="flex-row justify-between items-center w-full">
                             <Pressable
-                                onPress={() => setOpenModal(false)}
+                                onPress={() => {
+                                    setBudgetName('');
+                                    setExpense('');
+                                    setBudget('');
+                                    setOpenModal(false)
+                                }}
                                 style={styles.btn}
                                 className="bg-slate-200 flex-row gap-2"
                             >
@@ -285,7 +304,8 @@ const Budget = () => {
                                 style={styles.btn}
                                 className="bg-green-600"
                             >
-                                <Text className="text-white font-bold">Add</Text>
+                                <Text className="text-white font-bold">{selectedItemId !== null ? "Update Budget" : "Add Budget"}
+</Text>
                             </Pressable>
                         </View>
                     </View>
