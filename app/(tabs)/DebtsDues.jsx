@@ -1,96 +1,164 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View,Pressable } from 'react-native';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AddUpadet from '../../components/AddUpadet';
+import UniversalFormModal from '../../components/UniversalFormModal';
+
+
+const persons = [
+    {
+        id: "p1",
+        name: "Sumon",
+        phone: "01715736549",
+        email: "sumon@gmail.com",
+        address: "dhaka",
+        createdAt: new Date().toISOString(),
+        finalAmount: 1000,
+        debt: 0,
+        dues: 1000,
+
+        transactions: [
+            {
+                id: "t1",
+                type: "due",
+                title: "Book",
+                amount: 500, // due → positive
+                date: "2025-01-05"
+            },
+            {
+                id: "t2",
+                type: "due",
+                title: "Notebook",
+                amount: 500,
+                date: "2025-01-10"
+            }
+        ]
+    },
+
+    {
+        id: "p2",
+        name: "Rahim",
+        phone: "01823456789",
+        email: "rahim@gmail.com",
+        address: "Chapai",
+        createdAt: "2025-02-01",
+        finalAmount: -700,
+        debt: -700,
+        dues: 0,
+
+        transactions: [
+            {
+                id: "t3",
+                type: "debt",
+                title: "Lunch",
+                amount: -300, // debt → negative
+                date: "2025-02-02"
+            },
+            {
+                id: "t4",
+                type: "debt",
+                title: "Transport",
+                amount: -400,
+                date: "2025-02-03"
+            }
+        ]
+    },
+
+    {
+        id: "p3",
+        name: "Karim",
+        phone: "01998765432",
+        email: "karim@gmail.com",
+        address: "Rajshahi",
+        createdAt: "2025-03-01",
+        finalAmount: 1500,
+        debt: 0,
+        dues: 1500,
+
+        transactions: [
+            {
+                id: "t5",
+                type: "due",
+                title: "Project Payment",
+                amount: 1000,
+                date: "2025-03-05"
+            },
+            {
+                id: "t6",
+                type: "due",
+                title: "Bonus",
+                amount: 500,
+                date: "2025-03-10"
+            }
+        ]
+    }
+];
+
+
 const DebtsDues = () => {
-    const[isOpen,setIsOpen]=useState(false);
+
+    const [statistics, setStatistics] = useState({
+        dues: 0,
+        debt: 0,
+        persons: 0
+    });
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingIndex, setEditingIndex] = useState(null);
+    const [items, setItems] = useState(persons);
 
 
-    const persons = [
-        {
-            name: "Sumon",
-            phone: "01715736549",
-            email: "sumon@gmail.com",
-            date: new Date().toISOString(),
-            finalAmount: 1000,
-            transactions: [
-                {
-                    pabo: true,
-                    title: "Book",
-                    amount: 500,
-                    date: new Date("2025-01-05").toISOString()
-                },
-                {
-                    pabo: true,
-                    title: "Notebook",
-                    amount: 500,
-                    date: new Date("2025-01-10").toISOString()
-                }
-            ]
-        },
 
-        {
-            name: "Rahim",
-            phone: "01823456789",
-            email: "rahim@gmail.com",
-            date: new Date("2025-02-01").toISOString(),
-            finalAmount: -700,
-            transactions: [
-                {
-                    pabo: false,
-                    title: "Lunch",
-                    amount: 300,
-                    date: new Date("2025-02-02").toISOString()
-                },
-                {
-                    pabo: false,
-                    title: "Transport",
-                    amount: 400,
-                    date: new Date("2025-02-03").toISOString()
-                }
-            ]
-        },
 
-        {
-            name: "Karim",
-            phone: "01998765432",
-            email: "karim@gmail.com",
-            date: new Date("2025-03-01").toISOString(),
-            finalAmount: 1500,
-            transactions: [
-                {
-                    pabo: true,
-                    title: "Project Payment",
-                    amount: 1000,
-                    date: new Date("2025-03-05").toISOString()
-                },
-                {
-                    pabo: true,
-                    title: "Bonus",
-                    amount: 500,
-                    date: new Date("2025-03-10").toISOString()
-                }
-            ]
-        }
-    ];
+
     const blurhash =
         '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
+    const handleSubmit = (data) => {
+        const item = {
+            ...data,
+            finalAmount: 0,
+            date: new Date().toISOString(),
+            finalAmount: 0,
+            debt: 0,
+            dues: 0,
+            transactions: [],
+        };
+        console.log(item);
+        setItems(prev =>
+            editingIndex !== null
+                ? prev.map((it, i) => (i === editingIndex ? item : it))
+                : [...prev, item]
+        );
+
+        setEditingIndex(null);
+    };
+
+    useEffect(() => {
+        let totalDebts = 0;
+        let totalDues = 0;
+        totalDebts = items.reduce((sum, person) => sum + person.debt, 0);
+        totalDues = items.reduce((sum, person) => sum + person.dues, 0);
+
+        setStatistics({
+            dues: totalDues,
+            debt: totalDebts,
+            persons: items.length
+        })
+    }, [items]);
+
+
+
+
     return (
         <SafeAreaView
-            style={{
-                flex: 1,
-                padding: 16
-            }}
-            className='border '>
-
+            style={{ flex: 1, padding: 16 }} className='border '>
             <View className='justify-center  items-start m-4 w-[90%] pl-4'>
                 <Text className="text-2xl font-bold text-start ">Debts & Dues</Text>
             </View>
-
             <View className=' flex-row justify-between bg-white py-5 rounded-xl  '>
 
 
@@ -101,7 +169,7 @@ const DebtsDues = () => {
                         </View>
                         <Text className='text-base font-bold'>Dues</Text>
                     </View>
-                    <Text className='text-2xl font-bold text-green-600'> 488723</Text>
+                    <Text className='text-2xl font-bold text-green-600'> {statistics.dues}</Text>
                 </View>
                 <View className='border-r border-slate-300  gap-2 w-[32%] h-[64] pl-2 '>
                     <View className="flex-row">
@@ -110,7 +178,7 @@ const DebtsDues = () => {
                         </View>
                         <Text className='text-base font-bold'>Debt</Text>
                     </View>
-                    <Text className='text-2xl font-bold text-red-600'> 488723</Text>
+                    <Text className='text-2xl font-bold text-red-600'> {statistics.debt}</Text>
                 </View>
                 <View className='  gap-2 w-[32%] h-[64] pl-2 '>
                     <View className="flex-row gap-2">
@@ -119,25 +187,31 @@ const DebtsDues = () => {
                         </View>
                         <Text className='text-base font-bold'>Person</Text>
                     </View>
-                    <Text className='text-2xl font-bold'> 02</Text>
+                    <Text className='text-2xl font-bold'> {statistics.persons}</Text>
                 </View>
 
 
 
             </View>
-
             <ScrollView
                 style={{ flex: 1 }}
                 className=' mt-6'
             >
                 {
-                    persons.map((person, index) => {
+                    items.map((person, index) => {
                         return <Pressable
-                            onPress={()=>{console.log("card pressed")}}
+                            onPress={() => {
+                                    router.push({
+                                        pathname: '/screens/PersonDetails',
+                                        params: {
+                                            personData: JSON.stringify(person),
+                                        },
+                                    });
+                                }}
                             key={`${person.name}.${person.phone}`}
                             className=" bg-slate-200  w-full p-4 flex-row justify-between items-center rounded-xl mb-2 "
                         >
-                            <View className=' flex-row gap-4 items-center'>
+                            <View className='flex-row gap-4 items-center' >
                                 <View className=" border border-slate-100 rounded-full justify-center items-center w-[64] h-[64]">
                                     <Image
                                         style={styles.image}
@@ -153,6 +227,9 @@ const DebtsDues = () => {
                                     <Text>{person.name}</Text>
                                     <Text>{person.phone}</Text>
                                 </View>
+                                <View>
+
+                                </View>
                             </View>
 
 
@@ -164,10 +241,9 @@ const DebtsDues = () => {
 
 
             </ScrollView>
-
             <View>
                 <TouchableOpacity
-                    onPress={()=>{setIsOpen(!isOpen)}}
+                    onPress={() => { setModalOpen(true) }}
                     style={{
                         elevation: 10,
                         shadowColor: '#000',
@@ -183,7 +259,26 @@ const DebtsDues = () => {
 
                 </TouchableOpacity>
             </View>
-            <AddUpadet isOpen={isOpen} setIsOpen={setIsOpen} ></AddUpadet>
+            {/* <AddUpadet isOpen={isOpen} setIsOpen={setIsOpen} ></AddUpadet> */}
+            <UniversalFormModal
+                visible={modalOpen}
+                title={editingIndex !== null ? "Update person" : "Add Person"}
+                submitText={editingIndex !== null ? "Update" : "Add"}
+                initialValues={
+                    editingIndex !== null
+                        ? items[editingIndex]
+                        : { name: '', phone: '', email: '', address: '' }
+                }
+                fields={[
+                    { name: 'name', label: 'Name', required: true },
+                    { name: 'phone', label: 'Phone', keyboardType: 'numeric', required: true },
+                    { name: 'email', label: 'Email', keyboardType: 'Email' },
+                    { name: 'address', label: 'Address (optional)', keyboardType: 'text' },
+                ]}
+                onClose={() => setModalOpen(false)}
+                onSubmit={handleSubmit}
+            />
+
 
 
 

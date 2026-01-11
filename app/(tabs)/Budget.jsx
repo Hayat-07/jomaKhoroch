@@ -226,29 +226,9 @@ const Budget = () => {
             <Modal visible={openModal} transparent animationType="fade">
                 <View className="h-full justify-center items-center bg-black/80">
                     <View className="bg-white h-[400] w-[80%] rounded-2xl p-6 gap-4 justify-center">
-                        {/* <View className="flex-row justify-center items-center">
-              <Text>
-                {isPercent
-                  ? 'With Percentage(%)'
-                  : 'No Percentage(%)'}
-              </Text>
-              <Switch
-                trackColor={{
-                  false: '#767577',
-                  true: '#81b0ff',
-                }}
-                thumbColor={
-                  isPercent ? '#f5dd4b' : '#f4f3f4'
-                }
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={() =>
-                  setIsPercent(prev => !prev)
-                }
-                value={isPercent}
-              />
-            </View> */}
+              
                         <Text className=' text-xl font-bold '>{selectedItemId !== null ? "Update Budget" : "Add Budget"}
- </Text>
+                        </Text>
 
                         <TextInput
                             label="Budget Name"
@@ -305,7 +285,7 @@ const Budget = () => {
                                 className="bg-green-600"
                             >
                                 <Text className="text-white font-bold">{selectedItemId !== null ? "Update Budget" : "Add Budget"}
-</Text>
+                                </Text>
                             </Pressable>
                         </View>
                     </View>
